@@ -3,11 +3,19 @@ from tkinter import messagebox
 
 
 class CompoundInterestCalculator:
-    def __init__(self, root):
-        self.root = root
+    def __init__(self, parent):
+        self.root = parent
         self.root.title("Compound Interest Calculator")
         self.root.geometry("400x300")
         self.root.configure(bg='#f0f0f0')
+
+        # Initialize instance variables
+        self.principal_entry = None
+        self.rate_entry = None
+        self.time_entry = None
+        self.compound_entry = None
+        self.result_label = None
+        self.reset_button = None
 
         # Initialize UI components
         self.create_widgets()
