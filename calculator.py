@@ -1,62 +1,88 @@
 import tkinter as tk
 from tkinter import messagebox
 
-# Function to calculate compound interest
-def calculate():
-    try:
-        # Retrieve and validate inputs
-        principal = float(principal_entry.get())
-        rate = float(rate_entry.get()) / 100
-        time = float(time_entry.get())
-        compound = int(compound_entry.get())
 
-        # compound interest formula
-        amount = principal * (1 + rate / compound) ** (compound * time)
-        interest = amount - principal
+class CompoundInterestCalculator:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Compound Interest Calculator")
+        self.root.geometry("400x300")
+        self.root.configure(bg='#f0f0f0')
 
-        # update result label
-        result_label.config(text=f"Compound Interest = {interest:.2f}")
+        # Initialize UI components
+        self.create_widgets()
 
-    except ValueError:
-        messagebox.showerror("Invalid input! please enter valid numbers ")
+        #initialize UI components
+        self.create_widgets()
 
-# crate main window
+    def create_widgets(self):
+        # Initialize main tkinter window
+        tk.Label(self.root, text="Principal amount: ").grid(row=0, column=0, padx=10, pady=10)
+        self.principal_entry = tk.Entry(self.root)
+        self.principal_entry.grid(row=0, column=1)
+
+        tk.Label(self.root, text="Rate of Interest (%): ").grid(row=1, column=0, padx=10, pady=10)
+        self.rate_entry = tk.Entry(self.root)
+        self.rate_entry.grid(row=1, column=1)
+
+        tk.Label(self.root, text="Time (Years): ").grid(row=2, column=0, padx=10, pady=10)
+        self.time_entry = tk.Entry(self.root)
+        self.time_entry.grid(row=2, column=1)
+
+        tk.Label(self.root, text="Times compounded (year)").grid(row=3, column=0, padx=10, pady=10)
+        self.compound_entry = tk.Entry(self.root)
+        self.compound_entry.grid(row=3, column=1)
+
+        # Output label for result
+        self.result_label = tk.Label(self.root, text="Compound Interest: ")
+        self.result_label.grid(row=5, column=0, columnspan=2, pady=10)
+
+        # Calculate button
+        calculate_button = tk.Button(self.root, text="Calculate", command=self.calculate)
+        calculate_button.grid(row=4, column=0, columnspan=2, pady=10)
+
+        # Reset button
+        self.reset_button = tk.Button(self.root, text="Reset", command=self.reset_fields)
+        self.reset_button.grid(row=6, column=0, columnspan=2, pady=10)
+
+        # Add padding to widgets
+        for widget in self.root.winfo_children():
+            widget.grid_configure(padx=10, pady=5)
+
+    # Function to calculate compound interest
+    def calculate(self):
+        try:
+            # Retrieve and validate inputs
+            principal = float(self.principal_entry.get())
+            rate = float(self.rate_entry.get()) / 100
+            time = float(self.time_entry.get())
+            compound = int(self.compound_entry.get())
+
+            # Add validation to ensure positive values
+            if principal <= 0 or rate <= 0 or time <= 0 or compound <= 0:
+                raise ValueError("All values must be positive.")
+
+            # Compound interest formula
+            amount = principal * (1 + rate / compound) ** (compound * time)
+            interest = amount - principal
+
+            # Update result label
+            self.result_label.config(text=f"Compound Interest = {interest:.2f}")
+
+        except ValueError:
+            messagebox.showerror("Invalid input!", "Please enter valid positive numbers.")
+
+    def reset_fields(self):
+        # Clear the input fields and result
+        self.principal_entry.delete(0, tk.END)
+        self.rate_entry.delete(0, tk.END)
+        self.time_entry.delete(0, tk.END)
+        self.compound_entry.delete(0, tk.END)
+        self.result_label.config(text="Compound Interest: ")
+
+
+# Create main window and start the application
 root = tk.Tk()
-root.title("Compound Interest Calculator")
-
-# application window
-root.geometry("400x300")
-
-
-# initialize main tkinter window
-tk.Label(root, text="Principal amount: ").grid(row=0, column=0, padx=10, pady=10)
-principal_entry = tk.Entry(root)
-principal_entry.grid(row=0, column=1)
-
-tk.Label(root, text="Rate of Interest (%): " ).grid(row = 1, column=0, padx=10, pady=10)
-rate_entry = tk.Entry(root)
-rate_entry.grid(row=1, column=1)
-
-tk.Label(root, text="Time (Years): ").grid(row=2, column=0, padx= 10, pady=10)
-time_entry = tk.Entry(root)
-time_entry.grid(row=2, column=1)
-
-tk.Label(root, text="Times compound (year)").grid(row=3, column=0, padx=10, pady=10)
-compound_entry = tk.Entry(root)
-compound_entry.grid(row=3, column=1)
-
-# output label for result
-result_label = tk.Label(root, text="Compound Interest: ")
-result_label.grid(row=5, column=0, columnspan=2, pady=10)
-
-# calculate button
-calculate_button = tk.Button(root, text="calculate", command=calculate)
-calculate_button.grid(row=4, column=0, columnspan=2, pady=10)
-
-# adding padding to widgets
-for widget in root.winfo_children():
-    widget.grid_configure(padx=10, pady=5)
-
-# main loop
+app = CompoundInterestCalculator(root)
 root.mainloop()
 
